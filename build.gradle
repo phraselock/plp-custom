@@ -1,0 +1,58 @@
+plugins {
+    id 'java'
+    id 'application'
+    id 'com.gradleup.shadow' version '9.2.2'
+}
+
+group = 'plp'
+version = '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+application {
+    mainClass = 'plp.Main'
+}
+
+dependencies {
+    implementation "io.javalin:javalin:7.2.2"
+    implementation "org.slf4j:slf4j-simple:2.0.17"
+    implementation "org.json:json:20250107"
+
+    // X.509 certificate / PKCS12 issuance (ClientCertIssuer)
+    implementation "org.bouncycastle:bcpkix-jdk18on:1.79"
+    implementation "org.bouncycastle:bcprov-jdk18on:1.79"
+
+    implementation "com.fasterxml.jackson.core:jackson-databind:2.21.1"
+    implementation "org.json:json:20250107"
+    implementation "xmlpull:xmlpull:1.1.3.1"
+
+    //Redis access
+    implementation 'redis.clients:jedis:5.1.0'
+
+    // JWT
+    implementation 'io.jsonwebtoken:jjwt-api:0.12.6'
+    runtimeOnly    'io.jsonwebtoken:jjwt-impl:0.12.6'
+    runtimeOnly    'io.jsonwebtoken:jjwt-jackson:0.12.6'
+
+    testImplementation platform('org.junit:junit-bom:5.10.0')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+shadowJar {
+    archiveBaseName.set('plp-custom')
+    archiveVersion.set('1.0')
+    archiveClassifier.set('')
+    mergeServiceFiles()
+}
+
+test {
+    useJUnitPlatform()
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+    options.release = 21
+}
