@@ -8,11 +8,7 @@ import plp.crypto.ClientCertIssuer;
 import plp.api.PLPHandler;
 
 /*
-  ACHTUNG!!! Mit
-
   ./gradlew shadowJar
-
-  wird erst das nötige .jar daraus
  */
 
 public class Main {
