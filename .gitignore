@@ -47,3 +47,4 @@ plp-custom-1.0.jar
 
 # Local dev CA/certs — real key material, needed locally, never published.
 /certs/
+application.properties

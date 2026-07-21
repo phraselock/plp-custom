@@ -6,8 +6,10 @@ import io.javalin.http.Context;
 import org.json.JSONObject;
 import plp.config.AppConfig;
 import plp.crypto.ClientCertIssuer;
+import plp.service.JwtService;
 import plp.service.RestX;
 
+import java.security.PublicKey;
 import java.util.*;
 
 /**
@@ -89,20 +91,24 @@ public class PLPHandler
       String coreHost = AppConfig.plCoreUrl();
       String coreJwt = AppConfig.plCoreJwt();
 
-      RestX restX = new RestX(coreHost + "/api/plp/v1/validate/licverify/");
+      var jwt = new JwtService(coreJwt);
+      PublicKey publKey = AppConfig.plCorePublicKey();
+      jwt.setPublicKey(publKey);
+      boolean bValid = jwt.isValid();
+      if(bValid) {
+        RestX restX = new RestX(coreHost + "/api/plp/v1/validate/licverify/");
 
-      JSONObject jsonBody = new JSONObject();
-      jsonBody.put("devId", devID);
-      jsonBody.put("qrc", qrc);
+        JSONObject jsonBody = new JSONObject();
+        jsonBody.put("devId", devID);
+        jsonBody.put("qrc", qrc);
 
-      RestX.Response r = restX.post(jsonBody.toString(), Map.of("Authorization", "Bearer " + coreJwt));
-      if (r.status() == 200)
-      {
-        JSONObject jsonObj = new JSONObject(r.body());
-        String valid = jsonObj.optString ("valid","0");
-        if(Integer.valueOf(valid) == 1)
-        {
-          return true;
+        RestX.Response r = restX.post(jsonBody.toString(), Map.of("Authorization", "Bearer " + coreJwt));
+        if (r.status() == 200) {
+          JSONObject jsonObj = new JSONObject(r.body());
+          String valid = jsonObj.optString("valid", "0");
+          if (Integer.valueOf(valid) == 1) {
+            return true;
+          }
         }
       }
     } catch (Exception e) {
