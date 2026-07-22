@@ -48,14 +48,14 @@ import java.util.List;
  * make_client_cert_from_publpem.sh / make_ecc_client(_md).sh + openssl
  * scripts from the blueprint.
  */
-public class ClientCert implements ClientCertIssuer
+public class ClientCert implements IClientCertIssuer
 {
   // matches client_extension_C.cnf / client_extension_D.cnf
   private static final String EKU_OID_C = "1.3.6.1.4.1.59269.100.12";
   private static final String EKU_OID_D = "1.3.6.1.4.1.59269.100.13";
 
-  private static final Duration PUBKEY_CERT_VALIDITY = Duration.ofDays(365);
-  private static final Duration ECC_CERT_VALIDITY = Duration.ofDays(3650);
+  private static final Duration PUBKEY_CERT_VALIDITY = Duration.ofDays(3650); // 10 years
+  private static final Duration ECC_CERT_VALIDITY = Duration.ofDays(7300);    // 20 years
 
   static
   {

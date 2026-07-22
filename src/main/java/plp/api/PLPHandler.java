@@ -5,31 +5,24 @@ import io.javalin.config.JavalinConfig;
 import io.javalin.http.Context;
 import org.json.JSONObject;
 import plp.config.AppConfig;
-import plp.crypto.ClientCertIssuer;
+import plp.crypto.IClientCertIssuer;
 import plp.service.JwtService;
 import plp.service.RestX;
 
 import java.security.PublicKey;
 import java.util.*;
 
-/**
- * Port of api/validate.php (blueprint), reachable as
- * /api/mqtt/v1/validate/clientcert and /api/mqtt/v1/validate/clientcertmd.
- */
 public class PLPHandler
 {
-  private final ClientCertIssuer certIssuer;
+  private final IClientCertIssuer certIssuer;
 
-  public PLPHandler(ClientCertIssuer certIssuer)
+  public PLPHandler(IClientCertIssuer certIssuer)
   {
     this.certIssuer = certIssuer;
   }
 
   public void registerRoutes(JavalinConfig config)
   {
-    // Eine Route für alle Validierungstypen — der konkrete Typ wird in resolve()
-    // aus dem Pfad aufgelöst (analog zu api/validate.php). Neue Typen brauchen
-    // daher keine neue Route und keinen neuen Eintrag am Reverse Proxy.
     config.routes.post("/api/mqtt/v1/validate/*", this::resolve);
     config.routes.get("/api/mqtt/v1/validate/*", this::resolve);
   }
@@ -46,12 +39,9 @@ public class PLPHandler
     switch (type)
     {
       case "clientcert"   -> handle(ctx, this::clientCert);
-
       case "clientcertmd" -> handle(ctx, this::clientCertIos);
-      case "clientcertios" -> handle(ctx, this::clientCertIos); // clientCertMd
-
+      case "clientcertios" -> handle(ctx, this::clientCertIos);
       case "clientcertand" -> handle(ctx, this::clientCertAnd);
-
       case "test"         -> handle(ctx, this::test);
       default             -> ctx.status(500);
     }
@@ -117,10 +107,6 @@ public class PLPHandler
     return false;
   }
 
-  /**
-   * Port of fnx_clientcert(): issues a client certificate for win/android
-   * (from the device's own public key) or a PKCS12 for apple.
-   */
   private PLPResponse clientCert(Context ctx, PLPRequest req) throws Exception
   {
     if (!req.has(PLPRequest.DEV_ID) || !req.has(PLPRequest.QRC) || !req.has(PLPRequest.OS)
@@ -139,7 +125,7 @@ public class PLPHandler
     if (os.equals("win") || os.equals("android"))
     {
       byte[] publicKeyPem = Base64.getDecoder().decode(req.get(PLPRequest.PUBPEMB64));
-      ClientCertIssuer.CertResult cert = certIssuer.issueFromPublicKey(publicKeyPem, req.get(PLPRequest.PORT), req.get(PLPRequest.DEFAULT_MODE));
+      IClientCertIssuer.CertResult cert = certIssuer.issueFromPublicKey(publicKeyPem, req.get(PLPRequest.PORT), req.get(PLPRequest.DEFAULT_MODE));
       if (cert != null && !cert.certB64().isEmpty())
       {
         return new PLPResponse()
@@ -166,10 +152,6 @@ public class PLPHandler
     return PLPResponse.invalid();
   }
 
-  /**
-   * Port of fnx_clientcertmd(): issues a PKCS12 for ios with a dynamic
-   * extended-key-usage OID.
-   */
   private PLPResponse clientCertIos(Context ctx, PLPRequest req) throws Exception
   {
     if (!req.has(PLPRequest.DEV_ID) || !req.has(PLPRequest.QRC) || !req.has(PLPRequest.OS)
@@ -222,7 +204,7 @@ public class PLPHandler
     if (os.equals("win") || os.equals("android"))
     {
       byte[] publicKeyPem = Base64.getDecoder().decode(req.get(PLPRequest.PUBPEMB64));
-      ClientCertIssuer.CertResult cert = certIssuer.issueFromPublicKey(publicKeyPem, req.get(PLPRequest.PORT), req.get(PLPRequest.DEFAULT_MODE));
+      IClientCertIssuer.CertResult cert = certIssuer.issueFromPublicKey(publicKeyPem, req.get(PLPRequest.PORT), req.get(PLPRequest.DEFAULT_MODE));
       if (cert != null && !cert.certB64().isEmpty())
       {
         return new PLPResponse()

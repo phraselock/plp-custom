@@ -30,10 +30,6 @@ public class PLPResponse
     return new JSONObject(fields).toString();
   }
 
-  /**
-   * Mirrors the PHP SimpleXMLElement loop in fnx_clientcert/fnx_clientcertmd:
-   * <root><key>value</key>...</root>, with htmlspecialchars-style escaping.
-   */
   public String toXml()
   {
     StringBuilder sb = new StringBuilder("<root>");

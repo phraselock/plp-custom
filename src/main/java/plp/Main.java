@@ -4,7 +4,7 @@ import io.javalin.Javalin;
 import org.eclipse.jetty.util.thread.QueuedThreadPool;
 import plp.config.AppConfig;
 import plp.crypto.ClientCert;
-import plp.crypto.ClientCertIssuer;
+import plp.crypto.IClientCertIssuer;
 import plp.api.PLPHandler;
 
 /*
@@ -20,7 +20,7 @@ public class Main {
       AppConfig.jettyMinThreads(),  // min
       60_000                        // idle timeout ms
     );
-    threadPool.setName("jetty");
+    threadPool.setName("jetty-plp-custom");
 
     var app = Javalin.create(config -> {
       config.jetty.threadPool = threadPool;
@@ -28,14 +28,14 @@ public class Main {
 
       config.routes.before(ctx -> {
         if (!AppConfig.allowedIps().contains(ctx.ip())) {
-          ctx.status(403).result("Forbidden");
+          ctx.status(444).result("-");
           ctx.skipRemainingHandlers();
         }
       });
 
       config.routes.get("/", ctx -> ctx.result("plp-custom is running"));
 
-      ClientCertIssuer certIssuer = new ClientCert(AppConfig.caDirectory());
+      IClientCertIssuer certIssuer = new ClientCert(AppConfig.caDirectory());
       new PLPHandler(certIssuer).registerRoutes(config);
     });
 

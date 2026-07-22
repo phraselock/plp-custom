@@ -5,7 +5,7 @@ package plp.crypto;
  * (ca.mqtt_&lt;port&gt;.pem/.key from the blueprint's certs/CA directory).
  * Implementations replace the make_*.sh / openssl shell scripts.
  */
-public interface ClientCertIssuer
+public interface IClientCertIssuer
 {
   record CertResult(String serialNr, String certB64) {}
 

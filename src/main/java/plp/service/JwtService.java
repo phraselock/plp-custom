@@ -1,6 +1,5 @@
 package plp.service;
 
-import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
@@ -45,8 +44,10 @@ public class JwtService
    * Returns a claim value from the token payload without verifying the signature.
    * Standard names: "sub", "exp", "iat". Returns null if absent or token is malformed.
    */
-  /** Returns a claim value from the payload without verifying the signature. */
-  public String claim(String claimName) { return extract(1, claimName); }
+  public String claim(String claimName)
+  {
+    return extract(1, claimName);
+  }
 
   private String extract(int segment, String name)
   {
