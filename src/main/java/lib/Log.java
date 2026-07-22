@@ -1,4 +1,4 @@
-package com.ipoxo.plcore.lib;
+package lib;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.w3c.dom.Document;

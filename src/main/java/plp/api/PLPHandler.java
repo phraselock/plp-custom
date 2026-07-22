@@ -1,6 +1,6 @@
 package plp.api;
 
-import com.ipoxo.plcore.lib.Log;
+import lib.Log;
 import io.javalin.config.JavalinConfig;
 import io.javalin.http.Context;
 import org.json.JSONObject;
