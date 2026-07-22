@@ -85,6 +85,6 @@ and fetches a fresh `pl.core.jwt` from `plp-core` automatically (see its
 | `server.port` | Port `plp-custom` listens on (behind nginx, never exposed directly) |
 | `server.allowedIps` | IP allowlist for callers |
 | `ca.directory` | Directory with the customer's own CA files copied in at install time |
-| `pl.core.jwt` | Bearer token used to authenticate to `plp-core`; short-lived by design |
+| `pl.core.jwt` | Bearer token used to authenticate to `plp-core`; short-lived (7 days) by design. We recommend using a long-term bearer token for production. Please inquire at support@phraselock.at. It is for free!  |
 | `pl.core.url` | Base URL of `plp-core` |
 | `pl.core.jwt.ec.pub.x` / `.y` | `plp-core`'s EC public key, for verifying its JWTs locally |
