@@ -88,3 +88,7 @@ and fetches a fresh `pl.core.jwt` from `plp-core` automatically (see its
 | `pl.core.jwt` | Bearer token used to authenticate to `plp-core`; short-lived (7 days) by design. We recommend using a long-term bearer token for production. Please inquire at support@phraselock.at. It is for free!  |
 | `pl.core.url` | Base URL of `plp-core` |
 | `pl.core.jwt.ec.pub.x` / `.y` | `plp-core`'s EC public key, for verifying its JWTs locally |
+
+---
+
+© 2026 iPoxo IT GmbH — All rights reserved
